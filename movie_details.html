@@ -1,0 +1,16 @@
+<div class="movieDetails">
+    <h1>{{movie.title}}</h1>
+    <img ng-if="movie.poster_path" class="poster" ng-src="https://image.tmdb.org/t/p/w154{{movie.poster_path}}" alt="" />
+    <label for="">Summary:</label>
+    <p>{{movie.overview}}</p>
+    <label ng-if="movie.site" for="">Site:</label>
+    <p ng-if="movie.site">{{movie.homepage}}</p>
+    <label for="">Runtime (minutes):</label>
+    <p>{{movie.runtime}}</p>
+    <label for="">Release Date:</label>
+    <p>{{movie.release_date}}</p>
+    <label ng-if="movie.genre" for="">Genres:</label>
+    <ul>
+        <li ng-repeat="genre in movie.genre">{{genre}}</li>
+    </ul>
+</div>

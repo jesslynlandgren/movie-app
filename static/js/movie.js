@@ -1,4 +1,30 @@
-var app = angular.module('movies', []);
+var app = angular.module('movies', ['ui.router']);
+
+app.config(function($stateProvider, $urlRouterProvider) {
+    $stateProvider
+        .state({
+            name: 'now_playing',
+            url: '/',
+            templateUrl: 'now_playing.html',
+            controller: 'HomeController'
+        })
+
+        .state({
+            name: 'search_results',
+            url: '/{query}',
+            templateUrl: 'search.html',
+            controller: 'SearchResultsController'
+        })
+
+        .state({
+            name: 'movie_details',
+            url: '/detail/{id}',
+            templateUrl: 'movie_details.html',
+            controller: 'MovieDetailsController'
+        })
+
+    $urlRouterProvider.otherwise('/');
+});
 
 app.factory('MovieService', function($http) {
 
@@ -7,17 +33,6 @@ app.factory('MovieService', function($http) {
 
     service.nowPlaying = function() {
         var url = 'http://api.themoviedb.org/3/movie/now_playing';
-        return $http({
-            method: 'GET',
-            url: url,
-            params: {
-                api_key: API_KEY
-            }
-        });
-    };
-
-    service.movieDetails = function(movieId) {
-        var url = 'http://api.themoviedb.org/3/movie/' + movieId;
         return $http({
             method: 'GET',
             url: url,
@@ -38,34 +53,60 @@ app.factory('MovieService', function($http) {
             }
         });
     };
+
+    service.movieDetails = function(movieId) {
+        var url = 'http://api.themoviedb.org/3/movie/' + movieId;
+        return $http({
+            method: 'GET',
+            url: url,
+            params: {
+                api_key: API_KEY
+            }
+        });
+    };
     return service;
 });
 
-app.controller('MainController', function($scope, MovieService) {
+var queryGlobal = '';
 
-    $scope.getNowPlaying = function(){
-        MovieService.nowPlaying()
-            .success(function(movieResults) {
-                // got movie results
-                $scope.nowMovies = movieResults;
-                console.log('Movie results', movieResults);
-            });
+app.controller('HomeController', function($scope, $state, MovieService){
+    MovieService.nowPlaying()
+        .success(function(movieResults) {
+            $scope.results = movieResults.results;
+        });
+
+    $scope.search = function(){
+        console.log('Search Query: ', $scope.query);
+        $state.go('search_results', {
+            query: $scope.query
+        });
+        // if ($scope.query.length > 0){
+        //     console.log('Query to StateGO: ', $scope.query);
+        //     $state.go('search_results', {
+        //         query: $scope.query
+        //     });
+        // }
     };
+});
 
-    $scope.getMovieDetails = function(id){
-        MovieService.movieDetails($scope.movieID)
-            .success(function(data) {
-                // got movie results
-                console.log('Movie Details', data);
-            });
-    };
+app.controller('SearchResultsController', function($scope, $state, $stateParams, MovieService){
+    $scope.searchQuery = $stateParams.query;
+    console.log('Search Results Query: ', $scope.searchQuery);
+    console.log('Search Results Query: ', $scope.searchQuery.length);
+    // if ($scope.searchQuery.length > 0){
+    //     MovieService.searchMovies($stateParams.query)
+    //         .success(function(movieResults) {
+    //             $scope.results = movieResults.results;
+    //         });
+    // } else {
+    //     $scope.results = [];
+    // }
 
-    $scope.getSearchResults = function(query){
-        MovieService.searchMovies($scope.query)
-            .success(function(movieResults) {
-                // got movie results
-                console.log('Search Results', movieResults);
-            });
-    };
+});
 
+app.controller('MovieDetailsController', function($scope, $stateParams, MovieService) {
+    MovieService.movieDetails($stateParams.id)
+        .success(function(movie) {
+            $scope.movie = movie;
+        });
 });
