@@ -5,21 +5,35 @@ app.config(function($stateProvider, $urlRouterProvider) {
         .state({
             name: 'now_playing',
             url: '/now_playing',
-            templateUrl: 'now_playing.html',
+            templateUrl: 'movie_list.html',
             controller: 'HomeController'
         })
 
         .state({
             name: 'popular',
             url: '/popular',
-            templateUrl: 'popular.html',
+            templateUrl: 'movie_list.html',
             controller: 'PopularController'
+        })
+
+        .state({
+            name: 'top_rated',
+            url: '/top_rated',
+            templateUrl: 'movie_list.html',
+            controller: 'TopRatedController'
+        })
+
+        .state({
+            name: 'upcoming',
+            url: '/upcoming',
+            templateUrl: 'movie_list.html',
+            controller: 'UpcomingController'
         })
 
         .state({
             name: 'search_results',
             url: '/search/{query}',
-            templateUrl: 'search.html',
+            templateUrl: 'movie_list.html',
             controller: 'SearchResultsController'
         })
 
@@ -60,6 +74,28 @@ app.factory('MovieService', function($http) {
         });
     };
 
+    service.topRated = function() {
+        var url = 'http://api.themoviedb.org/3/movie/top_rated';
+        return $http({
+            method: 'GET',
+            url: url,
+            params: {
+                api_key: API_KEY
+            }
+        });
+    };
+
+    service.upcoming = function() {
+        var url = 'http://api.themoviedb.org/3/movie/upcoming';
+        return $http({
+            method: 'GET',
+            url: url,
+            params: {
+                api_key: API_KEY
+            }
+        });
+    };
+
     service.searchMovies = function(query) {
         var url = 'http://api.themoviedb.org/3/search/movie';
         return $http({
@@ -88,29 +124,20 @@ app.factory('MovieService', function($http) {
 var queryGlobal = '';
 
 app.controller('HomeController', function($scope, $state, MovieService){
+    $scope.search = function(){
+        $state.go('search_results', {
+            query: $scope.query
+        });
+    };
+
     MovieService.nowPlaying()
         .success(function(movieResults) {
             $scope.results = movieResults.results;
         });
-
-    $scope.search = function(){
-        console.log('Search Query: ', $scope.query);
-        $state.go('search_results', {
-            query: $scope.query
-        });
-        // if ($scope.query.length > 0){
-        //     console.log('Query to StateGO: ', $scope.query);
-        //     $state.go('search_results', {
-        //         query: $scope.query
-        //     });
-        // }
-    };
 });
 
 app.controller('SearchResultsController', function($scope, $state, $stateParams, MovieService){
     $scope.searchQuery = $stateParams.query;
-    console.log('Search Results Query: ', $scope.searchQuery);
-    console.log('Search Results Query Length: ', $scope.searchQuery.length);
     if ($scope.searchQuery.length > 0){
     MovieService.searchMovies($stateParams.query)
         .success(function(movieResults) {
@@ -123,6 +150,20 @@ app.controller('SearchResultsController', function($scope, $state, $stateParams,
 
 app.controller('PopularController', function($scope, $stateParams, MovieService) {
     MovieService.popular($stateParams.id)
+        .success(function(movieResults) {
+            $scope.results = movieResults.results;
+        });
+});
+
+app.controller('TopRatedController', function($scope, $stateParams, MovieService) {
+    MovieService.topRated($stateParams.id)
+        .success(function(movieResults) {
+            $scope.results = movieResults.results;
+        });
+});
+
+app.controller('UpcomingController', function($scope, $stateParams, MovieService) {
+    MovieService.upcoming($stateParams.id)
         .success(function(movieResults) {
             $scope.results = movieResults.results;
         });

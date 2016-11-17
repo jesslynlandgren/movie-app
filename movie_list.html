@@ -1,6 +1,7 @@
 <div class="searchResults">
     <div class="searchResult" ng-repeat="result in results">
+        <div ui-sref="movie_details({id:result.id})" class="overlay-title">{{result.title}}</div>
         <img ng-if="result.poster_path" class="poster" ui-sref="movie_details({id:result.id})" ng-src="https://image.tmdb.org/t/p/w300{{result.poster_path}}" alt="" />
-        <span ng-if="!result.poster_path">{{result.poster_path}}</span>
+        <span ng-if="!result.poster_path">{{result.title}}</span>
     </div>
 </div>
