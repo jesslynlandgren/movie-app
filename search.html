@@ -1,7 +1,3 @@
-<div class="buttons">
-    <button ui-sref="now_playing" type="button" class="btn button-inactive">Now Playing</button>
-    <button ui-sref="search_results" type="button" class="btn button-active">Search Results</button>
-</div>
 <div class="searchResults">
     <div class="searchResult" ng-repeat="result in results">
         <img ng-if="result.poster_path" class="poster" ui-sref="movie_details({id:result.id})" ng-src="https://image.tmdb.org/t/p/w154{{result.poster_path}}" alt="" />

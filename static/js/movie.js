@@ -4,14 +4,21 @@ app.config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state({
             name: 'now_playing',
-            url: '/',
+            url: '/now_playing',
             templateUrl: 'now_playing.html',
             controller: 'HomeController'
         })
 
         .state({
+            name: 'popular',
+            url: '/popular',
+            templateUrl: 'popular.html',
+            controller: 'PopularController'
+        })
+
+        .state({
             name: 'search_results',
-            url: '/{query}',
+            url: '/search/{query}',
             templateUrl: 'search.html',
             controller: 'SearchResultsController'
         })
@@ -23,7 +30,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
             controller: 'MovieDetailsController'
         })
 
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/now_playing');
 });
 
 app.factory('MovieService', function($http) {
@@ -33,6 +40,17 @@ app.factory('MovieService', function($http) {
 
     service.nowPlaying = function() {
         var url = 'http://api.themoviedb.org/3/movie/now_playing';
+        return $http({
+            method: 'GET',
+            url: url,
+            params: {
+                api_key: API_KEY
+            }
+        });
+    };
+
+    service.popular = function() {
+        var url = 'http://api.themoviedb.org/3/movie/popular';
         return $http({
             method: 'GET',
             url: url,
@@ -92,16 +110,22 @@ app.controller('HomeController', function($scope, $state, MovieService){
 app.controller('SearchResultsController', function($scope, $state, $stateParams, MovieService){
     $scope.searchQuery = $stateParams.query;
     console.log('Search Results Query: ', $scope.searchQuery);
-    console.log('Search Results Query: ', $scope.searchQuery.length);
-    // if ($scope.searchQuery.length > 0){
-    //     MovieService.searchMovies($stateParams.query)
-    //         .success(function(movieResults) {
-    //             $scope.results = movieResults.results;
-    //         });
-    // } else {
-    //     $scope.results = [];
-    // }
+    console.log('Search Results Query Length: ', $scope.searchQuery.length);
+    if ($scope.searchQuery.length > 0){
+    MovieService.searchMovies($stateParams.query)
+        .success(function(movieResults) {
+            $scope.results = movieResults.results;
+        });
+    } else {
+        $scope.results = [];
+    }
+});
 
+app.controller('PopularController', function($scope, $stateParams, MovieService) {
+    MovieService.popular($stateParams.id)
+        .success(function(movieResults) {
+            $scope.results = movieResults.results;
+        });
 });
 
 app.controller('MovieDetailsController', function($scope, $stateParams, MovieService) {
