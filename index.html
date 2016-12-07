@@ -3,35 +3,51 @@
 
 <head>
     <meta charset="utf-8">
-    <title>JPL Wiki</title>
+    <title>Movies What</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="static/css/bootstrap.min.css">
+        <link rel="stylesheet" href="static/css/bootstrap-switch.css">
     <link rel="stylesheet" href="static/css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Ubuntu|Work+Sans:200,400" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Ubuntu|Work+Sans:200,400,500,600,800" rel="stylesheet">
     <!-- Angular -->
     <script src="static/js/angular.js"></script>
     <script src="static/js/angular-ui-router.js"></script>
     <!-- Custom JS -->
     <script src="static/js/movie.js"></script>
+
+
 </head>
 
 <body ng-app="movies">
     <div class="container-fluid container1" ng-controller="HomeController">
         <div class="row row1">
-            <div class="col-xs-12">
+            <div class="col-xs-12 titleCol">
                 <h1 class="title">Movies What</h1>
             </div>
-            <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+            <div class="col-xs-12 col-sm-6 col-sm-offset-3 searchCol">
                 <input class="searchInput" ng-change="search()" ng-model="query" type="text" name="total" placeholder="search">
             </div>
-            <div class="col-xs-12 navButtons">
-                <a ui-sref="now_playing" class="modeButton" ui-sref-active="link-active">Now Playing</a>
-                <a ui-sref="popular" class="modeButton" ui-sref-active="link-active">Most Popular</a>
-                <a ui-sref="top_rated" class="modeButton" ui-sref-active="link-active">Top Rated</a>
-                <a ui-sref="upcoming" class="modeButton" ui-sref-active="link-active">Upcoming</a>
-                <a ui-sref="search_results" ng-click="search()" class="modeButton" ui-sref-active="link-active">Search Results</a>
+            <div class="col-sm-10 col-sm-offset-1 nav">
+                <div class="navButtons">
+                    <a ui-sref="now_playing" class="modeButton" ui-sref-active="link-active">Now Playing</a>
+                    <a ui-sref="popular" class="modeButton" ui-sref-active="link-active">Most Popular</a>
+                    <a ui-sref="top_rated" class="modeButton" ui-sref-active="link-active">Top Rated</a>
+                    <a ui-sref="upcoming" class="modeButton" ui-sref-active="link-active">Upcoming</a>
+                    <a ui-sref="search_results" ng-click="search()" class="modeButton" ui-sref-active="link-active">Search Results</a>
+                </div>
+                <div class="slideButtons">
+                    <span class="show">Show: </span>
+                    <div class="switchdiv">
+                        <span class="switchlabel">Movies</span>
+                        <input type="checkbox" name="movies" class="switch" data-size="mini" value="" checked>
+                    </div>
+                    <div class="switchdiv">
+                        <span class="switchlabel">TV</span>
+                        <input type="checkbox" name="tv" class="switch" data-size="mini" value="" checked>
+                    </div>
+                </div>
             </div>
             <div class="col-xs-12 navButtonsSelect">
                 <select class="form-control selectDropDown" name="">
@@ -48,5 +64,13 @@
 
 <script src="static/js/jquery.js"></script>
 <script src="static/js/bootstrap.min.js"></script>
+<!-- Bootstrap Switch -->
+<script src="static/js/bootstrap-switch.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".switch").bootstrapSwitch({onColor: 'moviered'});
+    });
+</script>
 
 </html>

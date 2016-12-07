@@ -1,16 +1,19 @@
 <div class="movieDetails">
-    <h1>{{movie.title}}</h1>
-    <img ng-if="movie.poster_path" class="poster" ng-src="https://image.tmdb.org/t/p/w154{{movie.poster_path}}" alt="" />
-    <label for="">Summary:</label>
-    <p>{{movie.overview}}</p>
-    <label ng-if="movie.site" for="">Site:</label>
-    <p ng-if="movie.site">{{movie.homepage}}</p>
-    <label for="">Runtime (minutes):</label>
-    <p>{{movie.runtime}}</p>
-    <label for="">Release Date:</label>
-    <p>{{movie.release_date}}</p>
-    <label ng-if="movie.genre" for="">Genres:</label>
-    <ul>
-        <li ng-repeat="genre in movie.genre">{{genre}}</li>
-    </ul>
+    <div class="moviePoster">
+        <img ng-if="movie.poster_path" class="poster" ng-src="https://image.tmdb.org/t/p/w300{{movie.poster_path}}" alt="" />
+    </div>
+    <div class="movieInfo">
+        <h1 class="detailTitle">{{movie.title}}</h1>
+        <span>{{movie.release_date.slice(0,4)}}  |  {{movie.runtime}} min<span ng-if="movie.genre" ng-repeat="genre in movie.genre">  |  {{genre}}</span></span>
+        <div class="summary">
+            <span class="bold" for="">Summary:</span>
+            <p>{{movie.overview}}</p>
+        </div>
+    </div>
 </div>
+<div class="movieNav">
+    <div class="movieNavButtons">
+        <a ui-sref="movie_details.similar" class="modeButton" ui-sref-active="link-active">Similar Movies</a>
+    </div>
+</div>
+<ui-view class="uiview"></ui-view>

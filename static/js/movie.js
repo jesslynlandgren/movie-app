@@ -44,6 +44,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
             controller: 'MovieDetailsController'
         })
 
+        .state({
+            name: 'movie_details.similar',
+            url: '/similar',
+            templateUrl: 'similar.html',
+            controller: 'SimilarMoviesController'
+        })
+
     $urlRouterProvider.otherwise('/now_playing');
 });
 
@@ -97,7 +104,7 @@ app.factory('MovieService', function($http) {
     };
 
     service.searchMovies = function(query) {
-        var url = 'http://api.themoviedb.org/3/search/movie';
+        var url = 'http://api.themoviedb.org/3/search/multi';
         return $http({
             method: 'GET',
             url: url,
@@ -118,10 +125,19 @@ app.factory('MovieService', function($http) {
             }
         });
     };
+
+    service.getSimilarMovies = function(movieId) {
+        var url = 'http://api.themoviedb.org/3/movie/' + movieId + '/similar';
+        return $http({
+            method: 'GET',
+            url: url,
+            params: {
+                api_key: API_KEY
+            }
+        });
+    };
     return service;
 });
-
-var queryGlobal = '';
 
 app.controller('HomeController', function($scope, $state, MovieService){
     $scope.search = function(){
@@ -173,5 +189,12 @@ app.controller('MovieDetailsController', function($scope, $stateParams, MovieSer
     MovieService.movieDetails($stateParams.id)
         .success(function(movie) {
             $scope.movie = movie;
+        });
+});
+
+app.controller('SimilarMoviesController', function($scope, $stateParams, MovieService) {
+    MovieService.getSimilar($stateParams.id)
+        .success(function(movieResults) {
+            $scope.results = movieResults.results;
         });
 });
